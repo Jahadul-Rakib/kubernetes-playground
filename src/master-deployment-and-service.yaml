@@ -1,0 +1,71 @@
+#first give service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-app-backend
+spec:
+  selector:
+    app: kube-app
+  ports:
+    - protocol: 'TCP'
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer # load-balancer make the service publicly accessible but
+                     # for make only available in the cluster make the type is ClusterIP
+
+
+
+
+#"---" this is yaml separator
+---
+
+
+# global environment variable config
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envirnment-valriable
+data:
+  folder: 'story'
+  user-name: 'Rakib'
+
+
+#"---" this is yaml separator
+---
+
+#then give deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-app
+  labels:
+    app: kube-app
+spec:
+  replicas: 2
+  template:
+    metadata:
+      name: kube-app
+      labels:
+        app: kube-app
+    spec:
+      containers:
+        - name: kube-app
+          image: jahadulrakib/test-app
+
+#          env:
+#            - name: FOLDER_NAME
+#              valueFrom:
+#                configMapKeyRef:
+#                  key: folder
+#                  name: envirnment-valriable
+
+#          another way for environment variable
+#          env:
+#            - name: OTHER_SERVICE_ADDRESS
+#              value: 'service_name.default' #auto generated service value
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: kube-app
+

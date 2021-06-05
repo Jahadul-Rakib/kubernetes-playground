@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-app
+  template:
+    metadata:
+      labels:
+        app: kube-app
+    spec:
+      containers:
+        - name: kube-app
+          image: jahadulrakib/test-app
+
